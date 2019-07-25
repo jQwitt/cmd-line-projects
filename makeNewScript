@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# Jack Witt - 7/17/19 - A script to create scripts 
+found_in_dir=1  	# bool for if exists 
+curr_path="$(pwd)"	# path script is made in
+dir="$curr_path/*"	# list of files in curr_path 
+user_in="empty"		# user text input holder
+
+# get name from user and validate it isn't taken
+while [ $found_in_dir -eq 1 ]
+do
+	found_in_dir=$((found_in_dir - 1))
+	echo "enter script name: "
+	read script_name
+	for file in $dir 
+	do
+		if [ "$file" == "$curr_path/$script_name" ]
+		then
+			echo "ERR: name already exists in $curr_path"
+			found_in_dir=$((found_in_dir + 1))
+		fi 
+	done
+done 
+
+# create new file and append data
+if [ $found_in_dir -eq 0 ]
+then 
+	echo "script called $script_name created in $curr_path/$script_name!"
+	echo "#!/bin/bash" > "$script_name"
+	echo "Add commands (enter stop to stop)"
+	while [ "$user_in" != "stop" ] 
+	do 		
+		read -e user_in
+		if [ "$user_in" != "stop" ]
+		then	
+			echo $user_in >> "$script_name"
+		fi 
+	done
+	chmod +x "$script_name" # make exec 	
+fi 
+
+# all done!
+exit
